@@ -16,13 +16,13 @@ def http_get_response(uri, *form_data)
 end
 
 def print_bug_header
-  BUG_LABELS.each { |bug| printf("%12s|", bug) }
+  BUG_LABELS.each { |bug| printf("%15s|", bug.gsub(/[\[\]]/, "") ) }
   printf "\n"
 end
 
 class Hash
   def print_bug_counts
-    self.values.each { |val| printf("%12s|", val) }
+    self.values.each { |val| printf("%15s|", val) }
     printf "\n"
   end
 end
@@ -148,9 +148,9 @@ if hit_users.length > 0
   puts "---------------------------------------------"
   printf "%10s|", "アカウント"
   print_bug_header
-  hit_users.each do |key, val|
+  hit_users.each do |key, vals|
     printf "%15s|", key
-    val.print_bug_counts
+    vals.print_bug_counts
   end
 end
 
