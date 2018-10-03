@@ -46,6 +46,8 @@ BUG_LABELS = %w(
   [style]
   [additional]
   [degrade]
+  [unimplemented]
+  [other]
 )
 
 initial_bug_counts = {}
