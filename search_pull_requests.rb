@@ -127,7 +127,7 @@ REPOSITORIES.each do |repo|
     end
 
     all_bug_counts.each do |key, val|
-      val += bug_counts[key]
+      all_bug_counts[key] += bug_counts[key]
     end
   end
 end
