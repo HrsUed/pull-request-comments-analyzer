@@ -117,7 +117,13 @@ REPOSITORIES.each do |repo|
         bugs: bug_counts,
       }
 
-      hit_users[user] = bug_counts
+      if hit_users.has_key?(user)
+        bug_counts.each do |key, val|
+          hit_users[user][key] += val
+        end
+      else
+        hit_users[user] = bug_counts
+      end
     end
 
     all_bug_counts.each do |key, val|
