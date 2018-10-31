@@ -1,5 +1,6 @@
 require "net/http"
 require "openssl"
+require "date"
 require "json"
 
 def http_get_response(uri, *form_data)
@@ -66,15 +67,30 @@ puts "プロジェクトキーは?"
 board = gets.chomp
 return "入力誤り" if board.nil? || board == ""
 
-puts "いつ以降？（yyyy-mm-dd）"
+puts "いつから？デフォルトは2週間前（yyyy-mm-dd）"
 from_date = gets.chomp
+from_date = (Time.now - 60 * 60 * 24 * 14).strftime("%F") if from_date == ""
 return "入力誤り" unless from_date =~ /^20[1-9][0-9]-[0-9]{2}-[0-9]{2}$/
 
+puts "いつまで？デフォルトは本日（yyyy-mm-dd）"
+to_date = gets.chomp
+to_date = Time.now.strftime("%F") if to_date == ""
+return "入力誤り" unless from_date =~ /^20[1-9][0-9]-[0-9]{2}-[0-9]{2}$/
+
+puts "クローズしたPRも含めますか？デフォルトは含める(y) (y/n)"
+case gets.chomp
+when "y", ""
+  include_close = true
+else
+  include_close = false
+end
+
 puts "========================================="
-puts "#{board}プロジェクトレビューコメントの内容を集計します"
+puts "レビューコメントの内容を集計します"
 puts "-----------------------------------------"
 puts "対象ボード：#{board}"
-puts "取得開始日：#{from_date}"
+puts "取得期間：#{from_date}〜#{to_date}"
+puts "クローズしたPR：#{include_close ? '含める' : '含めない'}"
 puts "========================================="
 
 REPOSITORIES.each do |repo|
