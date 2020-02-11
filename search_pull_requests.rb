@@ -116,7 +116,9 @@ REPOSITORIES.each do |repo|
 
     comments.each do |comment|
       message = comment["body"]
+      puts message
       BUG_LABELS.each_with_index do |bug, idx|
+        puts "------hit #{bug}-------" if message.include?(bug)
         bug_counts[bug] += 1 if message.include?(bug)
       end
     end
