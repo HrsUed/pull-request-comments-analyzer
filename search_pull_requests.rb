@@ -77,7 +77,7 @@ to_date = gets.chomp
 to_date = Time.now.strftime("%F") if to_date == ""
 return "入力誤り" unless from_date =~ /^20[1-9][0-9]-[0-9]{2}-[0-9]{2}$/
 
-puts "クローズしたPRも含めますか？デフォルトは含める(y) (y/n)"
+puts "期間内にクローズしたPRも含めますか？デフォルトは含める(y) (y/n)"
 case gets.chomp
 when "y", ""
   include_close = true
@@ -94,6 +94,7 @@ puts "クローズしたPR：#{include_close ? '含める' : '含めない'}"
 puts "========================================="
 
 REPOSITORIES.each do |repo|
+  puts repo
   url = "#{URL_BASE}/#{OWNER}/#{repo}/pulls"
   pulls = JSON.parse(http_get_response(url, state: "all").body)
 
@@ -101,7 +102,9 @@ REPOSITORIES.each do |repo|
     title = pull["title"]
     state = pull["state"]
     next unless title =~ /^#{board}/
-    next unless state == "open" || pull["merged_at"] >= from_date
+    next if include_close == false && state != "open"
+    next if pull["merged_at"] < from_date
+    puts title
 
     ticket_title = title.match(/^(#{board}-[0-9]+)/)
     ticket_title = ticket_title.length > 1 ? ticket_title[1] : title
